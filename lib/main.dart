@@ -143,6 +143,3 @@ class IncidenteCard extends StatelessWidget {
     );
   }
 }
-
-
-//dependendo do status mudar icon 
