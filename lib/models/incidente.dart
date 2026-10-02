@@ -1,16 +1,19 @@
 enum IncidenteStatus {
-  aberto, emAndamento, resolvido,
-}
+  aberto("Aberto"),
+  emAndamento("Em Andamento"), 
+  resolvido("Resolvido");
 
-extension IncidenteStatusExtension on IncidenteStatus {
-  String get textoExibicao {
-    switch (this) {
+  final String texto;
+  const IncidenteStatus(this.texto);
+
+  IncidenteStatus get proximo {
+    switch (this){
       case IncidenteStatus.aberto:
-        return 'Aberto';
+        return IncidenteStatus.emAndamento;
       case IncidenteStatus.emAndamento:
-        return 'Em andamento';
+        return IncidenteStatus.resolvido;
       case IncidenteStatus.resolvido:
-        return 'Resolvido';
+        return IncidenteStatus.aberto;
     }
   }
 }
@@ -33,7 +36,6 @@ extension IncidenteSeveridadeExtension on IncidenteSeveridade {
     }
   }
 }
-
 
 class Incidente {
   final String id;

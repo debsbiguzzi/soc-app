@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../models/incidente.dart';
 
 IconData iconeDaSeveridade(IncidenteSeveridade severidade) {
@@ -39,13 +38,23 @@ Color corDoStatus(IncidenteStatus status) {
   }
 }
 
-class IncidenteCard extends StatelessWidget {
+class IncidenteCard extends StatefulWidget {
   final Incidente incidente;
 
   const IncidenteCard({super.key, required this.incidente});
 
   @override
+  State<StatefulWidget> createState() => _IncidenteCardState();
+
+}
+
+class _IncidenteCardState extends State<IncidenteCard> {
+
+  late IncidenteStatus status = widget.incidente.status;
+
+  @override
   Widget build(BuildContext context) {
+    final incidente = widget.incidente;
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(12),
@@ -99,15 +108,23 @@ class IncidenteCard extends StatelessWidget {
               children: [
                 Chip(
                   label: Text(
-                    incidente.status.textoExibicao,
-                    style: TextStyle(color: corDoStatus(incidente.status)),
+                    status.texto,
+                    style: TextStyle(color: corDoStatus(status)),
                   ),
                   backgroundColor: Colors.grey.withValues(alpha: 0.2),
-                  side: BorderSide(color: corDoStatus(incidente.status)),
+                  side: BorderSide(color: corDoStatus(status)),
                 ),
                 Text(incidente.responsavel ?? 'Sem responsável'),
               ],
             ),
+            ElevatedButton(
+              onPressed:() {
+                setState(() {
+                  status = status.proximo;
+                });
+              },
+              child: Text("Avançar status")
+            )
           ],
         ),
       ),
