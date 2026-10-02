@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import '../models/incidente.dart';
 
-String textoDaSeveridade(Severidade severidade) {
+IconData iconeDaSeveridade(Severidade severidade) {
   switch (severidade) {
     case Severidade.critico:
-      return 'Crítico';
+      return Icons.report;
     case Severidade.alto:
-      return 'Alto';
+      return Icons.warning;
     case Severidade.medio:
-      return 'Médio';
+      return Icons.info;
     case Severidade.baixo:
-      return 'Baixo';
+      return Icons.low_priority;
   }
 }
 
@@ -27,30 +27,6 @@ Color corDaSeveridade(Severidade severidade) {
   }
 }
 
-IconData iconeDaSeveridade(Severidade severidade) {
-  switch (severidade) {
-    case Severidade.critico:
-      return Icons.report;
-    case Severidade.alto:
-      return Icons.warning;
-    case Severidade.medio:
-      return Icons.info;
-    case Severidade.baixo:
-      return Icons.low_priority;
-  }
-}
-
-String textoDoStatus(StatusIncidente status) {
-  switch (status) {
-    case StatusIncidente.aberto:
-      return 'Aberto';
-    case StatusIncidente.emAndamento:
-      return 'Em andamento';
-    case StatusIncidente.resolvido:
-      return 'Resolvido';
-  }
-}
-
 Color corDoStatus(StatusIncidente status) {
   switch (status) {
     case StatusIncidente.aberto:
@@ -62,16 +38,23 @@ Color corDoStatus(StatusIncidente status) {
   }
 }
 
-class IncidenteCard extends StatelessWidget {
+class IncidenteCard extends StatefulWidget {
   final Incidente incidente;
 
   const IncidenteCard({super.key, required this.incidente});
 
   @override
-  Widget build(BuildContext context) {
-    final corSeveridade = corDaSeveridade(incidente.severidade);
-    final corStatus = corDoStatus(incidente.status);
+  State<StatefulWidget> createState() => _IncidenteCardState();
 
+}
+
+class _IncidenteCardState extends State<IncidenteCard> {
+
+  late StatusIncidente status = widget.incidente.status;
+
+  @override
+  Widget build(BuildContext context) {
+    final incidente = widget.incidente;
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(12),
@@ -83,54 +66,65 @@ class IncidenteCard extends StatelessWidget {
               children: [
                 Chip(
                   label: Text(
-                    textoDaSeveridade(incidente.severidade),
+                    incidente.severidade.textoExibicao,
                     style: TextStyle(
-                      color: corSeveridade,
-                      fontWeight: FontWeight.bold,
+                      color: corDaSeveridade(incidente.severidade),
                     ),
                   ),
-                  backgroundColor: corSeveridade.withValues(alpha: 0.14),
-                  side: BorderSide(color: corSeveridade),
+                  backgroundColor: corDaSeveridade(incidente.severidade)
+                      .withValues(alpha: 0.1),
+                  side: BorderSide(
+                    color: corDaSeveridade(incidente.severidade),
+                  ),
                 ),
-                Text(
-                  incidente.abertoHa,
-                  style: TextStyle(color: Colors.grey.shade600),
-                ),
+                Text(incidente.abertoHa),
               ],
             ),
             const SizedBox(height: 8),
+
             Row(
               children: [
-                Icon(iconeDaSeveridade(incidente.severidade), color: corSeveridade),
+                Icon(
+                  iconeDaSeveridade(incidente.severidade),
+                  color: corDaSeveridade(incidente.severidade),
+                ),
                 const SizedBox(width: 8),
                 Text(
                   incidente.titulo,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+                  style: TextStyle(fontWeight: FontWeight.bold),
                 ),
               ],
             ),
+
             const SizedBox(height: 4),
             Text(
               '#${incidente.id} · ${incidente.tipo}',
-              style: TextStyle(color: Colors.grey.shade600),
+              style: const TextStyle(color: Colors.grey),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 4),
+
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Chip(
                   label: Text(
-                    textoDoStatus(incidente.status),
-                    style: TextStyle(
-                      color: corStatus,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    status.texto,
+                    style: TextStyle(color: corDoStatus(status)),
                   ),
-                  backgroundColor: Colors.grey.shade200,
+                  backgroundColor: Colors.grey.withValues(alpha: 0.2),
+                  side: BorderSide(color: corDoStatus(status)),
                 ),
                 Text(incidente.responsavel ?? 'Sem responsável'),
               ],
             ),
+            ElevatedButton(
+              onPressed:() {
+                setState(() {
+                  status = status.proximo;
+                });
+              },
+              child: Text("Avançar status")
+            )
           ],
         ),
       ),
