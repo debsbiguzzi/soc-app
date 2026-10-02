@@ -68,14 +68,12 @@ class _IncidenteCardState extends State<IncidenteCard> {
                   label: Text(
                     incidente.severidade.textoExibicao,
                     style: TextStyle(
-                      color: corDaSeveridade(incidente.severidade),
+                    color: corDaSeveridade(incidente.severidade),
+                    fontWeight: FontWeight.bold
                     ),
                   ),
-                  backgroundColor: corDaSeveridade(incidente.severidade)
-                      .withValues(alpha: 0.1),
-                  side: BorderSide(
-                    color: corDaSeveridade(incidente.severidade),
-                  ),
+                  backgroundColor: corDaSeveridade(incidente.severidade).withValues(alpha: 0.14),
+                  side: BorderSide(color: corDaSeveridade(incidente.severidade),),
                 ),
                 Text(incidente.abertoHa),
               ],
@@ -101,7 +99,7 @@ class _IncidenteCardState extends State<IncidenteCard> {
               '#${incidente.id} · ${incidente.tipo}',
               style: const TextStyle(color: Colors.grey),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 8),
 
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -109,10 +107,13 @@ class _IncidenteCardState extends State<IncidenteCard> {
                 Chip(
                   label: Text(
                     status.texto,
-                    style: TextStyle(color: corDoStatus(status)),
+                    style: TextStyle(
+                      color: corDoStatus(status),
+                      fontWeight: FontWeight.bold
+                      ),
                   ),
-                  backgroundColor: Colors.grey.withValues(alpha: 0.2),
-                  side: BorderSide(color: corDoStatus(status)),
+                  backgroundColor: Colors.grey.shade200,
+                  side: BorderSide(color: corDoStatus(status))
                 ),
                 Text(incidente.responsavel ?? 'Sem responsável'),
               ],
